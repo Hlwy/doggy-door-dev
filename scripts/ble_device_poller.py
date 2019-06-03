@@ -1,6 +1,9 @@
 import os, sys, re, time
 import subprocess as sp
 import threading
+import pprint
+
+pp = pprint.PrettyPrinter(indent=4)
 
 class BLEDevicePoller(object):
     def __init__(self,auto_start_btmon=False):
@@ -8,6 +11,8 @@ class BLEDevicePoller(object):
         self.lescan = None
         self.prcs = []
         self.threads = []
+        self.lock = threading.Lock()
+
 
         self.dt = 0
         self.nLoops = 0
@@ -39,6 +44,7 @@ class BLEDevicePoller(object):
                   "addr": str(baddr),
                   "type": int(type),
                   "seen": 0.0,
+                  "last_seen": 0.0,
                   "times_seen": 0,
                   "last_count": 0,
                   "rssi": 0
@@ -111,15 +117,18 @@ class BLEDevicePoller(object):
                 for i,dev in enumerate(self.paired_devices):
                     if dev["addr"] in line.rstrip():
                         dev["times_seen"]+=1
+                        dev["last_seen"]=dev["seen"]
                         dev["seen"] = time.time()
                         dev["last_count"] = count
                     tmpRssi = self.search_rssi(line.rstrip())
                     if tmpRssi and (count - dev["last_count"]) < 15:
                         dev["rssi"] = tmpRssi
 
-                    tmpStr = str(dev["name"] + ": [Seen=" + str(dev["times_seen"]) + ", RSSI=" + str(dev["rssi"])+"] --------- ")
+                    # tmpStr = str(dev["name"] + ": [Seen=" + str(dev["times_seen"]) + ", RSSI=" + str(dev["rssi"])+"] --------- ")
+                    tmpStr = str(pp.pprint(dev))
                     dispStr = dispStr + tmpStr
                 print(dispStr)
+                print("==================")
                 self.nUpdates+=1
                 if self.flag_update_exit:
                     break
