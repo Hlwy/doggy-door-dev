@@ -5,6 +5,7 @@ import threading
 class BLEDevicePoller(object):
     def __init__(self,auto_start_btmon=False):
         self.btmon = None
+        self.lescan = None
         self.prcs = []
         self.threads = []
 
@@ -59,13 +60,18 @@ class BLEDevicePoller(object):
     def start_btmon(self,verbose=True):
         if(verbose): print("[INFO] Starting 'btmon' process...")
         self.btmon = sp.Popen("sudo btmon".split(" "),stdout=sp.PIPE,stderr=sp.PIPE)
-        print("[INFO] Process 'btmon' initialized.")
+        if(verbose): print("[INFO] Starting 'lescan' process...")
+        self.lescan = sp.Popen("sudo hcitool lescan --duplicates".split(" "),stdout=sp.PIPE,stderr=sp.PIPE)
+        print("[INFO] Process 'btmon' and 'lescan' initialized.")
 
     def kill_btmon(self, verbose=True):
-        killcmd = ["sudo", "pkill", "-9", "-f", "btmon"]
         if(verbose): print("[INFO] Killing 'btmon' process...")
         if self.btmon is not None: self.btmon.kill()
-        try: sp.call(killcmd)
+        if self.lescan is not None: self.lescan.kill()
+
+        try: sp.call(["sudo", "pkill", "-9", "-f", "btmon"])
+        except: pass
+        try: sp.call(["sudo", "pkill", "-9", "-f", "hcitool"])
         except: pass
         print("[INFO] Process 'btmon' terminated.")
 
