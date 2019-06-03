@@ -150,7 +150,7 @@ class BLEDevicePoller(object):
                 self.paired_devices = copyDevs
                 self.nUpdates+=1
                 self.lock.release()
-                time.sleep(0.0001)
+                time.sleep(0)
                 if self.flag_exit_update:
                     break
         else: print("[ERROR] 'btmon' service has not been started. Exiting 'update_devices()'.")
@@ -166,13 +166,18 @@ class BLEDevicePoller(object):
     def loop(self, dt=30, check_period=1.0):
         self.last_time = time.time()
         prevDevs = []
+        lastSeen = []
+        testT = time.time()
         while 1:
             self.nLoops+=1
             now = time.time()
             self.dt = now - self.last_time
-
             curDevs = self.get_devices()
-            # print(prevDevs[0])
+            if lastSeen != curDevs[0]["times_seen"]:
+                lastSeen = curDevs[0]["times_seen"]
+                test_dt = time.time() - testT
+                print("updated values of [%d] took %s secs" % (curDevs[0]["times_seen"],str(test_dt)))
+                testT = time.time()
             # self.check_proximity(curDevs, prevDevs)
             # prevDevs = curDevs
 
@@ -181,7 +186,7 @@ class BLEDevicePoller(object):
                 self.last_time = time.time()
                 self.nChecks+=1
                 # curDevs = self.get_devices()
-                self.check_proximity(curDevs, prevDevs)
+                self.check_proximity(curDevs, prevDevs,verbose=False)
                 prevDevs = curDevs
                 # self.check_proximity(self.get_devices())
                 # self.previous_devices = curDevs
@@ -191,7 +196,7 @@ class BLEDevicePoller(object):
                 self.nChecks = 0
                 break
             # Pause
-            time.sleep(0.001)
+            time.sleep(0.0001)
             if self.flag_exit_update: break
         print("[INFO] loop() --- Loop exited. Initializing shut down...")
         self.flag_exit_update = True
