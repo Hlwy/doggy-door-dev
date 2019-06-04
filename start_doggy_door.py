@@ -72,6 +72,8 @@ if __name__ == "__main__":
     # self.motor_thread.start()
 
     while 1:
+        if pl.flag_open_door:
+            print("[INFO] Devices in range...")
         if upSwitch.is_pressed:
             pl.terminate()
             break
