@@ -59,7 +59,7 @@ class PiMotorDriver(object):
         elif(speed_ratio < 0): self.set_motor_direction(self.MOTOR_DIRECTION_BACKWARD)
         else: self.stop()
 
-        duty = int(fabs(speed_ratio) * 255)
+        duty = int(math.fabs(speed_ratio) * 255)
         self.pi.set_PWM_dutycycle(self.pwmPin, duty)
 
     def stop(self,verbose=False):
