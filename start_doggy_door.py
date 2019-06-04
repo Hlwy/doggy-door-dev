@@ -2,7 +2,7 @@
 import pigpio
 
 # import threading
-# from scripts.ble_device_poller import BLEDevicePoller
+from scripts.ble_device_poller import BLEDevicePoller
 from scripts.pi_limit_switch import PiLimitSwitch
 
 if __name__ == "__main__":
@@ -27,7 +27,11 @@ if __name__ == "__main__":
         exit()
 
     upSwitch = PiLimitSwitch(upLim,"Upper Switch",pi=pi, verbose=True)
-    time.sleep(dt)
+    while 1:
+        if upSwitch.is_pressed:
+            break
+    print("Switch pressed, Stopping...")
+
 
     # pl = BLEDevicePoller(flag_hw_reset=True)
     # pl.add_device("BlueCharm","B0:91:22:F7:6D:55",'bluecharm')
