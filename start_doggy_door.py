@@ -72,14 +72,12 @@ if __name__ == "__main__":
     # self.motor_thread.start()
 
     while 1:
-        print(pl.flag_open_door)
         if upSwitch.is_pressed:
             pl.terminate()
             break
         if lowSwitch.is_pressed:
             pl.terminate()
             break
-        time.sleep(0)
     print("Switch pressed, Stopping...")
     pl.flag_stop = True
     update_thread.join()
