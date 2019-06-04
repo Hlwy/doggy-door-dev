@@ -3,12 +3,7 @@ import pigpio
 
 # import threading
 # from scripts.ble_device_poller import BLEDevicePoller
-
-def lower_limit_callback(gpio, level, tick):
-    print("[%.2f] Lower Limit Reached: %s, %s" % (time.time(),str(gpio), str(level)) )
-
-def upper_limit_callback(gpio, level, tick):
-    print("[%.2f] Upper Limit Reached: %s, %s" % (time.time(),str(gpio), str(level)) )
+from scripts.pi_limit_switch import PiLimitSwitch
 
 if __name__ == "__main__":
     import time, argparse
@@ -31,15 +26,7 @@ if __name__ == "__main__":
         print("[ERROR] DoggyDoorMain() ---- Could not connect to Raspberry Pi!")
         exit()
 
-    pi.set_mode(upLim, pigpio.INPUT)
-    pi.set_mode(lowLim, pigpio.INPUT)
-    pi.set_pull_up_down(upLim, pigpio.PUD_UP)
-    pi.set_pull_up_down(lowLim, pigpio.PUD_UP)
-    pi.set_glitch_filter(upLim, 50)
-    pi.set_glitch_filter(lowLim, 50)
-
-    cb1 = pi.callback(upLim, pigpio.FALLING_EDGE, upper_limit_callback)
-    cb2 = pi.callback(lowLim, pigpio.FALLING_EDGE, lower_limit_callback)
+    upSwitch = PiLimitSwitch(upLim,"Upper Switch",pi=pi)
     time.sleep(dt)
 
     # pl = BLEDevicePoller(flag_hw_reset=True)
