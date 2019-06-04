@@ -3,8 +3,9 @@ import pigpio, time
 
 class PiLimitSwitch(object):
     is_pressed = False
-    def __init__(self,pin, name="Lower Limit Switch",pi=None):
+    def __init__(self,pin, name="Lower Limit Switch",pi=None, verbose=False):
         self.name = name
+        self.verbose = verbose
         # Initialize pigpiod if not already done so
         if pi is None:
             pi = pigpio.pi()
@@ -30,12 +31,13 @@ class PiLimitSwitch(object):
         self.__del__()
 
     def callback_pressed(self,gpio, level, tick):
-        print("[%.2f] Limit Switch '%s' on pin '%d' activated." % (time.time(),self.name,gpio) )
+        if self.verbose: print("[%.2f] Limit Switch '%s' on pin '%d' activated." % (time.time(),self.name,gpio) )
         self.is_pressed = True
 
     def callback_depressed(self,gpio, level, tick):
-        print("[%.2f] Limit Switch '%s' on pin '%d' de-activated." % (time.time(),self.name,gpio) )
+        if self.verbose: print("[%.2f] Limit Switch '%s' on pin '%d' de-activated." % (time.time(),self.name,gpio) )
         self.is_pressed = False
+        
 if __name__ == "__main__":
     import time, argparse
 
