@@ -66,8 +66,8 @@ if __name__ == "__main__":
 
     # Setup commandline argument(s) structures
     ap = argparse.ArgumentParser(description='Pi Rotary Encoder')
-    ap.add_argument("--pinA", "-a", type=int, default=7, metavar='GPIO', help="Encoder A pin")
-    ap.add_argument("--pinB", "-b", type=int, default=8, metavar='GPIO', help="Encoder B pin")
+    ap.add_argument("--pinA", "-a", type=int, default=18, metavar='GPIO', help="Encoder A pin")
+    ap.add_argument("--pinB", "-b", type=int, default=23, metavar='GPIO', help="Encoder B pin")
     ap.add_argument("--sleep", "-t", type=int, default=300, metavar='PERIOD', help="How long you want program to run (secs)")
     # Store parsed arguments into array of variables
     args = vars(ap.parse_args())
