@@ -75,14 +75,13 @@ if __name__ == "__main__":
         if pl.are_devices_nearby():
             print("[%.2f] Devices in range..." % time.time())
         if upSwitch.is_pressed:
-            pl.terminate()
             break
         if lowSwitch.is_pressed:
-            pl.terminate()
             break
         time.sleep(0.1)
+
     print("Switch pressed, Stopping...")
-    pl.flag_stop = True
+    pl.terminate()
     update_thread.join()
     enc.close()
     motor.stop()
