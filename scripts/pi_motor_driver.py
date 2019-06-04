@@ -99,11 +99,10 @@ if __name__ == "__main__":
     pwm = args["pwm"]
     dt = args["sleep"]
 
-    if pi is None:
-        pi = pigpio.pi()
-        if not pi.connected:
-            print("[ERROR] Could not connect to Raspberry Pi!")
-            exit()
+    pi = pigpio.pi()
+    if not pi.connected:
+        print("[ERROR] Could not connect to Raspberry Pi!")
+        exit()
     motor = PiMotorDriver(pwm, dir,pi=pi)
 
     print("Successfully initialized 'PiMotorDriver' object")

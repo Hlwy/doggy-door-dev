@@ -78,11 +78,11 @@ if __name__ == "__main__":
     pinB = args["pinB"]
     dt = args["sleep"]
 
-    if pi is None:
-        pi = pigpio.pi()
-        if not pi.connected:
-            print("[ERROR] Could not connect to Raspberry Pi!")
-            exit()
+
+    pi = pigpio.pi()
+    if not pi.connected:
+        print("[ERROR] Could not connect to Raspberry Pi!")
+        exit()
     enc = PiEncoder(pinA, pinB,pi=pi)
     time.sleep(dt)
     enc.close()
