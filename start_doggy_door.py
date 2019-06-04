@@ -77,7 +77,7 @@ if __name__ == "__main__":
         if lowSwitch.is_pressed:
             break
     print("Switch pressed, Stopping...")
-
+    pl.flag_stop = True
     enc.close()
     motor.stop()
     upSwitch.close()
