@@ -80,7 +80,7 @@ if __name__ == "__main__":
         if lowSwitch.is_pressed:
             pl.terminate()
             break
-        time.sleep(0.01)
+        time.sleep(0.1)
     print("Switch pressed, Stopping...")
     pl.flag_stop = True
     update_thread.join()
