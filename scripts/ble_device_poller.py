@@ -201,8 +201,13 @@ class BLEDevicePoller(object):
     def terminate(self):
         self.lock.acquire()
         self.flag_stop = True
-        # os.kill(os.getpid(), signal.SIGUSR1)
         self.lock.release()
+
+    def are_devices_nearby(self):
+        self.lock.acquire()
+        flag = self.flag_open_door
+        self.lock.release()
+        return flag
 
     def loop(self, dt=30, check_period=0.5,verbose=True):
         self.last_time = time.time()

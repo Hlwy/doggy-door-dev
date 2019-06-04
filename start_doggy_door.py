@@ -72,7 +72,7 @@ if __name__ == "__main__":
     # self.motor_thread.start()
 
     while 1:
-        if pl.flag_open_door:
+        if pl.are_devices_nearby():
             print("[INFO] Devices in range...")
         if upSwitch.is_pressed:
             pl.terminate()
@@ -80,6 +80,7 @@ if __name__ == "__main__":
         if lowSwitch.is_pressed:
             pl.terminate()
             break
+        time.sleep(0.01)
     print("Switch pressed, Stopping...")
     pl.flag_stop = True
     update_thread.join()
