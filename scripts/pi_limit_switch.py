@@ -2,6 +2,7 @@
 import pigpio, time
 
 class PiLimitSwitch(object):
+    is_pressed = False
     def __init__(self,pin, name="Lower Limit Switch",pi=None):
         self.name = name
         # Initialize pigpiod if not already done so
@@ -17,18 +18,24 @@ class PiLimitSwitch(object):
         self.pi.set_pull_up_down(pin, pigpio.PUD_UP)
         self.pi.set_glitch_filter(pin, 50)
 
-        self.cb = pi.callback(pin, pigpio.FALLING_EDGE, self.callback)
+        self.cb_down = pi.callback(pin, pigpio.FALLING_EDGE, self.callback_pressed)
+        self.cb_up = pi.callback(pin, pigpio.FALLING_RISING, self.callback_depressed)
 
     def __del__(self):
         print("[INFO] PiLimitSwitch() ---- Deleting object '%s'..." % self.name)
-        self.cb.cancel()
+        self.cb_up.cancel()
+        self.cb_down.cancel()
 
     def close(self):
         self.__del__()
 
-    def callback(self,gpio, level, tick):
+    def callback_pressed(self,gpio, level, tick):
         print("[%.2f] Limit Switch '%s' on pin '%d' activated." % (time.time(),self.name,gpio) )
+        self.is_pressed = True
 
+    def callback_depressed(self,gpio, level, tick):
+        print("[%.2f] Limit Switch '%s' on pin '%d' de-activated." % (time.time(),self.name,gpio) )
+        self.is_pressed = False
 if __name__ == "__main__":
     import time, argparse
 
