@@ -50,7 +50,17 @@ class BLEDevicePoller(object):
             print("[INFO] Killing any initialized subprocesses...")
             [prc.kill() for prc in self.prcs]
 
-        # TODO: add in motor control function to shut door on exit
+    def start(self):
+        self.start_btmon()
+        self.update_thread = threading.Thread(target=self.update_devices)
+        self.motor_thread = threading.Thread(target=self.motor_loop)
+        self.update_thread.start()
+        self.motor_thread.start()
+        self.loop()
+
+    def close(self):
+        self.__del__()
+
 
     def signal_handler(self, signal, frame):
         print('You pressed Ctrl+C!')
@@ -222,7 +232,7 @@ class BLEDevicePoller(object):
             if self.flag_stop: break
         print("[INFO] loop() --- Loop exited. Initializing shut down...")
         self.flag_stop = True
-        self.__del__()
+        self.close()
 
     def check_proximity(self, curDevs,prevDevs, debug_readings=False,verbose=False):
         flag_open_door = False
@@ -279,31 +289,9 @@ class BLEDevicePoller(object):
         if(verbose): print("[INFO] verify_device_readings() --- Verified %d device readings" % (len(readings)))
         return readings
 
-    def motor_loop(self):
-        while 1:
-            if self.flag_open_door:
-                if not self.is_door_opening:
-                    print("[INFO] motor_loop() ---- Opening Door...")
-                else: print("[INFO] motor_loop() ---- Keeping Door Open...")
-                self.is_door_opening = True
-                # motor control function here
-                time.sleep(5.0)
-            else:
-                if self.is_door_opening:
-                    print("[INFO] motor_loop() ---- Closing Door...")
-                self.is_door_opening = False
-                # motor control function here
-            if self.flag_stop: break
-        print("[INFO] motor_loop() --- Exited.")
-
 if __name__ == "__main__":
     pl = BLEDevicePoller(flag_hw_reset=True)
     pl.add_device("BlueCharm","B0:91:22:F7:6D:55",'bluecharm')
     pl.add_device("tkr","C3:CE:5E:26:AD:0A",'trackr')
 
-    pl.start_btmon()
-    pl.update_thread = threading.Thread(target=pl.update_devices)
-    pl.motor_thread = threading.Thread(target=pl.motor_loop)
-    pl.update_thread.start()
-    pl.motor_thread.start()
-    pl.loop()
+    pl.start()

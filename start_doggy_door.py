@@ -7,6 +7,24 @@ from scripts.pi_motor_driver import PiMotorDriver
 from scripts.pi_limit_switch import PiLimitSwitch
 from scripts.pi_encoder import PiEncoder
 
+def motor_loop(self):
+    while 1:
+        if self.flag_open_door:
+            if not self.is_door_opening:
+                print("[INFO] motor_loop() ---- Opening Door...")
+            else: print("[INFO] motor_loop() ---- Keeping Door Open...")
+            self.is_door_opening = True
+            # motor control function here
+            time.sleep(5.0)
+        else:
+            if self.is_door_opening:
+                print("[INFO] motor_loop() ---- Closing Door...")
+            self.is_door_opening = False
+            # motor control function here
+        if self.flag_stop: break
+    print("[INFO] motor_loop() --- Exited.")
+
+
 if __name__ == "__main__":
     import time, argparse
 
@@ -43,6 +61,12 @@ if __name__ == "__main__":
     enc = PiEncoder(pinA, pinB,pi=pi)
     upSwitch = PiLimitSwitch(upLim,"Upper Switch",pi=pi, verbose=True)
     lowSwitch = PiLimitSwitch(lowLim,"Lower Switch",pi=pi, verbose=True)
+
+    pl = BLEDevicePoller(flag_hw_reset=True)
+    pl.add_device("BlueCharm","B0:91:22:F7:6D:55",'bluecharm')
+    pl.add_device("tkr","C3:CE:5E:26:AD:0A",'trackr')
+    pl.start()
+
     while 1:
         if upSwitch.is_pressed:
             break
@@ -54,7 +78,8 @@ if __name__ == "__main__":
     motor.stop()
     upSwitch.close()
     lowSwitch.close()
-
+    pl.close()
+    
     # pl = BLEDevicePoller(flag_hw_reset=True)
     # pl.add_device("BlueCharm","B0:91:22:F7:6D:55",'bluecharm')
     # pl.add_device("tkr","C3:CE:5E:26:AD:0A",'trackr')
