@@ -38,8 +38,8 @@ if __name__ == "__main__":
     pi.set_glitch_filter(upLim, 50)
     pi.set_glitch_filter(lowLim, 50)
 
-    cb1 = pi.callback(upLim, pigpio.EITHER_EDGE, upper_limit_callback)
-    cb2 = pi.callback(lowLim, pigpio.EITHER_EDGE, lower_limit_callback)
+    cb1 = pi.callback(upLim, pigpio.FALLING_EDGE, upper_limit_callback)
+    cb2 = pi.callback(lowLim, pigpio.FALLING_EDGE, lower_limit_callback)
     time.sleep(dt)
 
     # pl = BLEDevicePoller(flag_hw_reset=True)
