@@ -73,8 +73,10 @@ if __name__ == "__main__":
     while 1:
         print(pl.flag_open_door)
         if upSwitch.is_pressed:
+            pl.terminate()
             break
         if lowSwitch.is_pressed:
+            pl.terminate()
             break
     print("Switch pressed, Stopping...")
     pl.flag_stop = True
