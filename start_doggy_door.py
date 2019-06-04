@@ -4,11 +4,36 @@ import pigpio
 import threading
 from scripts.ble_device_poller import BLEDevicePoller
 
+def lower_limit_callback(gpio, level, tick):
+    print("Lower Limit Reached: %s, %s, %s" % (str(gpio), str(level), str(tick)) )
+
+def upper_limit_callback(gpio, level, tick):
+    print("Upper Limit Reached: %s, %s, %s" % (str(gpio), str(level), str(tick)) )
+
 if __name__ == "__main__":
+    import time, argparse
+
+    # Setup commandline argument(s) structures
+    ap = argparse.ArgumentParser(description='Pi Rotary Encoder')
+    ap.add_argument("--upper-limit", "-u", type=int, default=21, metavar='GPIO', help="Gpio responsible for setting motor direction")
+    ap.add_argument("--lower-limit", "-l", type=int, default=20, metavar='GPIO', help="Pin responsible for setting motor PWM signal")
+    ap.add_argument("--sleep", "-t", type=int, default=300, metavar='PERIOD', help="How long you want the program to run (secs)")
+    # Store parsed arguments into array of variables
+    args = vars(ap.parse_args())
+
+    # Extract stored arguments array into individual variables for later usage in script
+    upLim = args["upper-limit"]
+    lowLim = args["lower-limit"]
+    dt = args["sleep"]
+
     pi = pigpio.pi()
     if not pi.connected:
         print("[ERROR] DoggyDoorMain() ---- Could not connect to Raspberry Pi!")
         exit()
+
+    cb1 = pi.callback(upLim, pigpio.EITHER_EDGE, upper_limit_callback)
+    cb2 = pi.callback(lowLim, pigpio.EITHER_EDGE, lower_limit_callback)
+    time.sleep(dt)
 
     # pl = BLEDevicePoller(flag_hw_reset=True)
     # pl.add_device("BlueCharm","B0:91:22:F7:6D:55",'bluecharm')

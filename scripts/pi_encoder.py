@@ -78,7 +78,6 @@ if __name__ == "__main__":
     pinB = args["pinB"]
     dt = args["sleep"]
 
-
     pi = pigpio.pi()
     if not pi.connected:
         print("[ERROR] Could not connect to Raspberry Pi!")
