@@ -73,7 +73,7 @@ if __name__ == "__main__":
 
     while 1:
         if pl.are_devices_nearby():
-            print("[INFO] Devices in range...")
+            print("[%.2f] Devices in range..." % time.time())
         if upSwitch.is_pressed:
             pl.terminate()
             break
