@@ -66,11 +66,13 @@ if __name__ == "__main__":
     pl.add_device("BlueCharm","B0:91:22:F7:6D:55",'bluecharm')
     pl.add_device("tkr","C3:CE:5E:26:AD:0A",'trackr')
     pl.start()
-    
+
     # self.motor_thread = threading.Thread(target=self.motor_loop)
     # self.motor_thread.start()
 
     while 1:
+        if pl.flag_open_door:
+            print("Opening Door")
         if upSwitch.is_pressed:
             break
         if lowSwitch.is_pressed:
