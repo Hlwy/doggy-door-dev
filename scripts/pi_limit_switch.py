@@ -19,7 +19,7 @@ class PiLimitSwitch(object):
         self.pi.set_glitch_filter(pin, 50)
 
         self.cb_down = pi.callback(pin, pigpio.FALLING_EDGE, self.callback_pressed)
-        self.cb_up = pi.callback(pin, pigpio.FALLING_RISING, self.callback_depressed)
+        self.cb_up = pi.callback(pin, pigpio.RISING_EDGE, self.callback_depressed)
 
     def __del__(self):
         print("[INFO] PiLimitSwitch() ---- Deleting object '%s'..." % self.name)
