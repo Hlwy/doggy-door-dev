@@ -90,7 +90,8 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser(description='Pi Rotary Encoder')
     ap.add_argument("--gpio", "-d", type=int, default=21, metavar='GPIO', help="Gpio responsible for setting motor direction")
     ap.add_argument("--pwm", "-p", type=int, default=20, metavar='GPIO', help="Pin responsible for setting motor PWM signal")
-    ap.add_argument("--sleep", "-t", type=int, default=300, metavar='PERIOD', help="How long you want program to run (secs)")
+    ap.add_argument("--sleep", "-t", type=float, default=1.0, metavar='PERIOD', help="How long you want to drive the motor (secs)")
+    ap.add_argument("--speed", "-s", type=float, default=0.0, metavar='SPEED', help="Speed you want to drive the motor (-1.0 < spd < 1.0)")
     # Store parsed arguments into array of variables
     args = vars(ap.parse_args())
 
@@ -98,12 +99,15 @@ if __name__ == "__main__":
     dir = args["gpio"]
     pwm = args["pwm"]
     dt = args["sleep"]
+    vel = args["speed"]
 
     pi = pigpio.pi()
     if not pi.connected:
         print("[ERROR] Could not connect to Raspberry Pi!")
         exit()
     motor = PiMotorDriver(pwm, dir,pi=pi)
-
+    motor.set_speed(vel)
+    time.sleep(dt)
+    motor.stop()
     print("Successfully initialized 'PiMotorDriver' object")
     pi.stop()
