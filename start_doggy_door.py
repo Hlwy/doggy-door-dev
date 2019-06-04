@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import pigpio
 
-# import threading
+import threading
 from scripts.ble_device_poller import BLEDevicePoller
 from scripts.pi_motor_driver import PiMotorDriver
 from scripts.pi_limit_switch import PiLimitSwitch
@@ -65,7 +65,8 @@ if __name__ == "__main__":
     pl = BLEDevicePoller(flag_hw_reset=True)
     pl.add_device("BlueCharm","B0:91:22:F7:6D:55",'bluecharm')
     pl.add_device("tkr","C3:CE:5E:26:AD:0A",'trackr')
-    pl.start()
+    update_thread = threading.Thread(target=pl.start)
+    update_thread.start()
 
     # self.motor_thread = threading.Thread(target=self.motor_loop)
     # self.motor_thread.start()
@@ -81,6 +82,7 @@ if __name__ == "__main__":
         time.sleep(0)
     print("Switch pressed, Stopping...")
     pl.flag_stop = True
+    update_thread.join()
     enc.close()
     motor.stop()
     upSwitch.close()

@@ -236,7 +236,6 @@ class BLEDevicePoller(object):
             # Pause
             time.sleep(0.0001)
             if self.flag_stop:
-                print("[INFO] BLEDevicePoller --- Breaking...")
                 break
         print("[INFO] loop() --- Loop exited. Initializing shut down...")
         self.flag_stop = True
