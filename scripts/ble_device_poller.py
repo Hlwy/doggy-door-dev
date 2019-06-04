@@ -1,11 +1,8 @@
 import os, sys, re, time
 import subprocess as sp
 import threading
-import pprint
 import signal
 import enum
-
-pp = pprint.PrettyPrinter(indent=4)
 
 class BeaconType(enum.Enum):
     trackr = -60
