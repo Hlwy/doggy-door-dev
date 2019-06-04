@@ -217,6 +217,7 @@ class BLEDevicePoller(object):
                 if prevDevs is None: prevDevs = [dict(d) for d in curDevs]
 
                 self.flag_open_door = self.check_proximity(curDevs,prevDevs)
+                if verbose: print("[INFO] motor_loop() ---- Opening Door...")
                 # Store Current found devices for next check sequence
                 prevDevs = [dict(d) for d in curDevs]
 
