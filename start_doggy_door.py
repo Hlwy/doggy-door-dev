@@ -5,10 +5,10 @@ import pigpio
 # from scripts.ble_device_poller import BLEDevicePoller
 
 def lower_limit_callback(gpio, level, tick):
-    print("Lower Limit Reached: %s, %s, %s" % (str(gpio), str(level), str(tick)) )
+    print("[%.2f] Lower Limit Reached: %s, %s" % (time.time(),str(gpio), str(level)) )
 
 def upper_limit_callback(gpio, level, tick):
-    print("Upper Limit Reached: %s, %s, %s" % (str(gpio), str(level), str(tick)) )
+    print("[%.2f] Upper Limit Reached: %s, %s" % (time.time(),str(gpio), str(level)) )
 
 if __name__ == "__main__":
     import time, argparse
