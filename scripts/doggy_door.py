@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 import pigpio
-import os, sys, time, signal
-import math
 
-class PiMotorDriver(object):
+import threading
+from ble_device_poller import BLEDevicePoller
+from pi_motor_driver import PiMotorDriver
+from pi_limit_switch import PiLimitSwitch
+from pi_encoder import PiEncoder
+
+class DoggyDoor(object):
     def __init__(self,pinPwm,pinGpio,pinEncA=None,pinEncB=None, pi=None):
         # Initialize pigpiod if not already done so
         if pi is None:
@@ -87,7 +91,7 @@ if __name__ == "__main__":
     import time, argparse
 
     # Setup commandline argument(s) structures
-    ap = argparse.ArgumentParser(description='Pi Motor Driver')
+    ap = argparse.ArgumentParser(description='Pi Rotary Encoder')
     ap.add_argument("--gpio", "-d", type=int, default=21, metavar='GPIO', help="Gpio responsible for setting motor direction")
     ap.add_argument("--pwm", "-p", type=int, default=20, metavar='GPIO', help="Pin responsible for setting motor PWM signal")
     ap.add_argument("--sleep", "-t", type=float, default=1.0, metavar='PERIOD', help="How long you want to drive the motor (secs)")

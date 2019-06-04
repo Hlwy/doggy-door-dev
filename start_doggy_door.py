@@ -43,16 +43,11 @@ if __name__ == "__main__":
     ap.add_argument("--sleep", "-t", type=int, default=300, metavar='PERIOD', help="How long you want the program to run (secs)")
     # Store parsed arguments into array of variables
     args = vars(ap.parse_args())
-
     # Extract stored arguments array into individual variables for later usage in script
-    upLim = args["upper"]
-    lowLim = args["lower"]
-    pinA = args["pinA"]
-    pinB = args["pinB"]
-    dt = args["sleep"]
-    dir = args["gpio"]
-    pwm = args["pwm"]
-    vel = args["speed"]
+    upLim = args["upper"];           lowLim = args["lower"]
+    pinA = args["pinA"];             pinB = args["pinB"]
+    dir = args["gpio"];              pwm = args["pwm"]
+    vel = args["speed"];             dt = args["sleep"]
 
     pi = pigpio.pi()
     if not pi.connected:

@@ -14,7 +14,7 @@ class PiEncoder(object):
         if pi is None:
             pi = pigpio.pi()
             if not pi.connected:
-                print("[ERROR] PiMotorDriver() ---- Could not connect to Raspberry Pi!")
+                print("[ERROR] PiEncoder() ---- Could not connect to Raspberry Pi!")
                 exit()
         self.pi = pi
 
