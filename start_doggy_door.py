@@ -78,6 +78,7 @@ if __name__ == "__main__":
         if lowSwitch.is_pressed:
             pl.terminate()
             break
+        time.sleep(0)
     print("Switch pressed, Stopping...")
     pl.flag_stop = True
     enc.close()
