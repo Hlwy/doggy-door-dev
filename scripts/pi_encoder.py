@@ -42,6 +42,7 @@ class PiEncoder(object):
 
     def callback(self,step):
         self.position+=step
+        print("[INFO] PiEncoder --- Position: %d" % self.position)
 
     def signal_handler(self, signal, frame):
         print('You pressed Ctrl+C!')
