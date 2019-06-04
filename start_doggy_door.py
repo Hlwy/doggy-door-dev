@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 import pigpio
 
-import threading
-from scripts.ble_device_poller import BLEDevicePoller
+# import threading
+# from scripts.ble_device_poller import BLEDevicePoller
 
 def lower_limit_callback(gpio, level, tick):
     print("Lower Limit Reached: %s, %s, %s" % (str(gpio), str(level), str(tick)) )
