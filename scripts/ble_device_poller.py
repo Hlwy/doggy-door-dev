@@ -53,9 +53,7 @@ class BLEDevicePoller(object):
     def start(self):
         self.start_btmon()
         self.update_thread = threading.Thread(target=self.update_devices)
-        self.motor_thread = threading.Thread(target=self.motor_loop)
         self.update_thread.start()
-        self.motor_thread.start()
         self.loop()
 
     def close(self):
