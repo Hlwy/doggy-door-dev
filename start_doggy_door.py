@@ -26,7 +26,7 @@ if __name__ == "__main__":
         print("[ERROR] DoggyDoorMain() ---- Could not connect to Raspberry Pi!")
         exit()
 
-    upSwitch = PiLimitSwitch(upLim,"Upper Switch",pi=pi)
+    upSwitch = PiLimitSwitch(upLim,"Upper Switch",pi=pi, verbose=True)
     time.sleep(dt)
 
     # pl = BLEDevicePoller(flag_hw_reset=True)
