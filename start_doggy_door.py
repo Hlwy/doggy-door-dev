@@ -24,19 +24,22 @@ def motor_loop(self):
         if self.flag_stop: break
     print("[INFO] motor_loop() --- Exited.")
 
+# def open_door(motor, speed):
+#     motor.set_speed(speed)
+
 
 if __name__ == "__main__":
     import time, argparse
 
     # Setup commandline argument(s) structures
     ap = argparse.ArgumentParser(description='Pi Rotary Encoder')
-    ap.add_argument("--upper", "-u", type=int, default=21, metavar='GPIO', help="Gpio responsible for setting motor direction")
-    ap.add_argument("--lower", "-l", type=int, default=20, metavar='GPIO', help="Pin responsible for setting motor PWM signal")
+    ap.add_argument("--upper", "-u", type=int, default=12, metavar='GPIO', help="Gpio responsible for setting motor direction")
+    ap.add_argument("--lower", "-l", type=int, default=16, metavar='GPIO', help="Pin responsible for setting motor PWM signal")
     ap.add_argument("--pinA", "-a", type=int, default=18, metavar='GPIO', help="Encoder A pin")
     ap.add_argument("--pinB", "-b", type=int, default=23, metavar='GPIO', help="Encoder B pin")
     ap.add_argument("--gpio", "-d", type=int, default=21, metavar='GPIO', help="Gpio responsible for setting motor direction")
     ap.add_argument("--pwm", "-p", type=int, default=20, metavar='GPIO', help="Pin responsible for setting motor PWM signal")
-    ap.add_argument("--speed", "-s", type=float, default=0.0, metavar='SPEED', help="Speed you want to drive the motor (-1.0 < spd < 1.0)")
+    ap.add_argument("--speed", "-s", type=float, default=0.1, metavar='SPEED', help="Speed you want to drive the motor (-1.0 < spd < 1.0)")
     ap.add_argument("--sleep", "-t", type=int, default=300, metavar='PERIOD', help="How long you want the program to run (secs)")
     # Store parsed arguments into array of variables
     args = vars(ap.parse_args())
@@ -74,9 +77,12 @@ if __name__ == "__main__":
     while 1:
         if pl.are_devices_nearby():
             print("[%.2f] Devices in range..." % time.time())
+            motor.set_speed(vel)
         if upSwitch.is_pressed:
+            motor.stop()
             break
         if lowSwitch.is_pressed:
+            motor.stop()
             break
         time.sleep(0.1)
 
