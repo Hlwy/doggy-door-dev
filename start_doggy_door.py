@@ -31,6 +31,11 @@ if __name__ == "__main__":
         print("[ERROR] DoggyDoorMain() ---- Could not connect to Raspberry Pi!")
         exit()
 
+    pi.set_mode(upLim, pigpio.INPUT)
+    pi.set_mode(lowLim, pigpio.INPUT)
+    pi.set_pull_up_down(upLim, pigpio.PUD_UP)
+    pi.set_pull_up_down(lowLim, pigpio.PUD_UP)
+
     cb1 = pi.callback(upLim, pigpio.EITHER_EDGE, upper_limit_callback)
     cb2 = pi.callback(lowLim, pigpio.EITHER_EDGE, lower_limit_callback)
     time.sleep(dt)
