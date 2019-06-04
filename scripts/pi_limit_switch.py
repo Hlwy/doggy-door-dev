@@ -27,7 +27,7 @@ class PiLimitSwitch(object):
         self.__del__()
 
     def callback(self,gpio, level, tick):
-        print("[%.2f] Limit Switch '%s' on pin '%d' activated." % (time.time(),self.name,str(gpio)) )
+        print("[%.2f] Limit Switch '%s' on pin '%d' activated." % (time.time(),self.name,gpio) )
 
 if __name__ == "__main__":
     import time, argparse
