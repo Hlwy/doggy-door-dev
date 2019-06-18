@@ -49,7 +49,7 @@ def close_door(motor, speed,encoder,switches,encoder_limit=2945.0):
         flag_stop_motor = False
         pos = encoder.get_current_position()
         print("[INFO] close_door() --- Position: %d" % pos)
-        if(pos >= encoder_limit):
+        if(pos <= encoder_limit):
             flag_stop_motor = True
             print("[INFO] close_door() --- Encoder Min Position Reached Stopping Motor...")
             break
@@ -106,16 +106,19 @@ if __name__ == "__main__":
 
     # self.motor_thread = threading.Thread(target=self.motor_loop)
     # self.motor_thread.start()
+    close_door(motor,-1.0*vel,enc,[lowSwitch],encoder_limit=-1.0*encLim)
+    encOffset = enc.get_current_position()
 
     while 1:
         if pl.are_devices_nearby():
             print("[%.2f] Devices in range..." % time.time())
             # motor.set_speed(vel)
-            open_door(motor,vel,enc,[upSwitch],encoder_limit=encLim)
+            open_door(motor,vel,enc,[upSwitch],encoder_limit=encLim+encOffset)
             while pl.are_devices_nearby():
+                time.sleep(0.2)
                 print("Keeping door open (devices nearby).....")
             print("No devices nearby, closing door...")
-            close_door(motor,-vel,enc,[lowSwitch],encoder_limit=-encLim)
+            close_door(motor,-1.0*vel,enc,[lowSwitch],encoder_limit=(-1.0*encLim)+encOffset)
         # if upSwitch.is_pressed:
         #     motor.stop()
         #     break
