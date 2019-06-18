@@ -258,9 +258,9 @@ class BLEDevicePoller(object):
             if not dev["has_active_readings"]:
                 if verbose: print("[INFO] check_proximity() ---- No new updates for device [%s], skipping...." % (dev["addr"]))
             else:
-                if self.debug_rssi: print("[INFO] check_proximity() -------- Device [%s] detected with RSSI = %d. (Threshold = %d)" % (dev["addr"],dev["rssi"],dev["beacon_type"].value))
+                if self.debug_rssi: print("[INFO] check_proximity() -------- Device [%s] detected with RSSI = %d. (Threshold = %d)" % (dev["addr"],dev["rssi"],dev["beacon_type"]))
 
-                if dev["rssi"] >= dev["beacon_type"].value:
+                if dev["rssi"] >= dev["beacon_type"]:
                     flag_open_door = True
                     nNearDevices+=1
 
