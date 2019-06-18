@@ -6,6 +6,7 @@ class PiLimitSwitch(object):
     def __init__(self,pin, name="Lower Limit Switch",pi=None, verbose=False):
         self.name = name
         self.verbose = verbose
+        self.pin = pin
         # Initialize pigpiod if not already done so
         if pi is None:
             pi = pigpio.pi()
@@ -37,10 +38,14 @@ class PiLimitSwitch(object):
     def callback_depressed(self,gpio, level, tick):
         if self.verbose: print("[%.2f] Limit Switch '%s' on pin '%d' de-activated." % (time.time(),self.name,gpio) )
         self.is_pressed = False
-        
+
+    def check(self):
+        level = self.pi.read(self.pin)
+        print("[INFO] PiLimitSwitch::check() ---- GPIO [%d] Level = %d" % (self.pin,level))
+
 if __name__ == "__main__":
     import time, argparse
-
+    count = 0
     # Setup commandline argument(s) structures
     ap = argparse.ArgumentParser(description='Pi Limit Switch')
     ap.add_argument("--pin", "-p", type=int, default=20, metavar='GPIO', help="Pin attached to switch")
@@ -59,6 +64,12 @@ if __name__ == "__main__":
         print("[ERROR] Could not connect to Raspberry Pi!")
         exit()
     switch = PiLimitSwitch(pin, name,pi=pi)
+    while 1:
+        switch.check()
+        time.sleep(0.1)
+        count+=1
+        if count >= 10:
+            break
     time.sleep(dt)
     switch.close()
     pi.stop()
