@@ -43,6 +43,25 @@ def open_door(motor, speed,encoder,switches,encoder_limit=2945.0):
 
     motor.stop()
 
+def close_door(motor, speed,encoder,switches,encoder_limit=2945.0):
+    motor.set_speed(speed)
+    while 1:
+        flag_stop_motor = False
+        pos = encoder.get_current_position()
+        print("[INFO] close_door() --- Position: %d" % pos)
+        if(pos >= encoder_limit):
+            flag_stop_motor = True
+            print("[INFO] close_door() --- Encoder Min Position Reached Stopping Motor...")
+            break
+        for sw in switches:
+            if sw.is_pressed:
+                flag_stop_motor = True
+
+        if flag_stop_motor:
+            break
+
+    motor.stop()
+
 if __name__ == "__main__":
     import time, argparse
 
@@ -55,6 +74,7 @@ if __name__ == "__main__":
     ap.add_argument("--gpio", "-d", type=int, default=21, metavar='GPIO', help="Gpio responsible for setting motor direction")
     ap.add_argument("--pwm", "-p", type=int, default=20, metavar='GPIO', help="Pin responsible for setting motor PWM signal")
     ap.add_argument("--speed", "-s", type=float, default=0.1, metavar='SPEED', help="Speed you want to drive the motor (-1.0 < spd < 1.0)")
+    ap.add_argument("--limit", "-l", type=float, default=2945.0, metavar='ENC_POS', help="Encoder reading at max door open position.")
     ap.add_argument("--sleep", "-t", type=int, default=300, metavar='PERIOD', help="How long you want the program to run (secs)")
     ap.add_argument("--verbose","-v", action="store_true", help="increase output verbosity")
     # Store parsed arguments into array of variables
@@ -64,6 +84,7 @@ if __name__ == "__main__":
     pinA = args["pinA"];             pinB = args["pinB"]
     dir = args["gpio"];              pwm = args["pwm"]
     vel = args["speed"];             dt = args["sleep"]
+    encLim = args["limit"]
     verbose = args["verbose"]
 
     pi = pigpio.pi()
@@ -90,7 +111,11 @@ if __name__ == "__main__":
         if pl.are_devices_nearby():
             print("[%.2f] Devices in range..." % time.time())
             # motor.set_speed(vel)
-            open_door(motor,vel,enc,[upSwitch,lowSwitch])
+            open_door(motor,vel,enc,[upSwitch],encoder_limit=encLim)
+            while pl.are_devices_nearby():
+                print("Keeping door open (devices nearby).....")
+            print("No devices nearby, closing door...")
+            close_door(motor,-vel,enc,[lowSwitch],encoder_limit=-encLim)
         # if upSwitch.is_pressed:
         #     motor.stop()
         #     break
@@ -100,6 +125,7 @@ if __name__ == "__main__":
         time.sleep(0.1)
 
     print("Switch pressed, Stopping...")
+    motor.stop()
     pl.terminate()
     update_thread.join()
     enc.close()
