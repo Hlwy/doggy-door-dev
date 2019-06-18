@@ -212,12 +212,9 @@ class BLEDevicePoller(object):
         self.lock.release()
         return flag
 
-    def loop(self, dt=30, check_period=0.5,verbose=True):
+    def loop(self, dt=5, check_period=0.1,verbose=True):
         self.last_time = time.time()
-        lastSeen = []
-        testT = time.time()
         prevDevs = None
-        prevDev = None
         while 1:
             self.nLoops+=1
             now = time.time()
