@@ -2,15 +2,14 @@ import os, sys, re, time
 import subprocess as sp
 import threading
 import signal
-import enum
-
-class BeaconType(enum.Enum):
-    trackr = -60
-    bluecharm = -70
-    tile = -50
 
 class BLEDevicePoller(object):
-    def __init__(self, flag_hw_reset=False):
+    beacons = {
+        "trackr": -60.0,
+        "bluecharm":  -70.0,
+        "tile": -50.0
+    }
+    def __init__(self, flag_hw_reset=False,debug_rssi=False):
         if flag_hw_reset: self.restart_hardware()
 
         signal.signal(signal.SIGINT, self.signal_handler)
@@ -37,6 +36,7 @@ class BLEDevicePoller(object):
         self.flag_stop = False
         self.flag_open_door = False
         self.is_door_opening = False
+        self.debug_rssi = debug_rssi
 
     def __del__(self):
         self.flag_stop = True
@@ -59,6 +59,9 @@ class BLEDevicePoller(object):
     def close(self):
         self.__del__()
 
+    def modify_beacon_threshold(self,beacon_id, rssi_threshold,verbose=False):
+        prevVal = self.beacons[str(beacon_id)]
+        self.beacons[str(beacon_id)] = float(rssi_threshold)
 
     def signal_handler(self, signal, frame):
         print('You pressed Ctrl+C!')
@@ -66,10 +69,10 @@ class BLEDevicePoller(object):
         sys.exit(0)
 
     def add_device(self,name,baddr,beacon_type, verbose=True):
-        try: devtype = BeaconType[str(beacon_type)]
+        try: devtype = self.beacons[str(beacon_type)]
         except:
             print("[INFO] add_device() ---- Invalid 'beacon_type' passed in, defaulting to BeaconType['bluecharm'].")
-            devtype = BeaconType['bluecharm']
+            devtype = self.beacons['bluecharm']
             pass
         tmpDev = {"name": str(name),
                   "addr": str(baddr),
@@ -246,7 +249,7 @@ class BLEDevicePoller(object):
         self.flag_stop = True
         self.close()
 
-    def check_proximity(self, curDevs,prevDevs, debug_readings=False,verbose=False):
+    def check_proximity(self, curDevs,prevDevs,verbose=False):
         flag_open_door = False
         nNearDevices = 0
         readings = self.verify_device_readings(curDevs,prevDevs)
@@ -255,7 +258,7 @@ class BLEDevicePoller(object):
             if not dev["has_active_readings"]:
                 if verbose: print("[INFO] check_proximity() ---- No new updates for device [%s], skipping...." % (dev["addr"]))
             else:
-                if debug_readings: print("[INFO] check_proximity() -------- Device [%s] detected with RSSI = %d. (Threshold = %d)" % (dev["addr"],dev["rssi"],dev["beacon_type"].value))
+                if self.debug_rssi: print("[INFO] check_proximity() -------- Device [%s] detected with RSSI = %d. (Threshold = %d)" % (dev["addr"],dev["rssi"],dev["beacon_type"].value))
 
                 if dev["rssi"] >= dev["beacon_type"].value:
                     flag_open_door = True

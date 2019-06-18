@@ -32,7 +32,7 @@ if __name__ == "__main__":
     import time, argparse
 
     # Setup commandline argument(s) structures
-    ap = argparse.ArgumentParser(description='Pi Rotary Encoder')
+    ap = argparse.ArgumentParser(description='Doggy Door Main')
     ap.add_argument("--upper", "-u", type=int, default=12, metavar='GPIO', help="Gpio responsible for setting motor direction")
     ap.add_argument("--lower", "-l", type=int, default=16, metavar='GPIO', help="Pin responsible for setting motor PWM signal")
     ap.add_argument("--pinA", "-a", type=int, default=18, metavar='GPIO', help="Encoder A pin")
@@ -41,6 +41,7 @@ if __name__ == "__main__":
     ap.add_argument("--pwm", "-p", type=int, default=20, metavar='GPIO', help="Pin responsible for setting motor PWM signal")
     ap.add_argument("--speed", "-s", type=float, default=0.1, metavar='SPEED', help="Speed you want to drive the motor (-1.0 < spd < 1.0)")
     ap.add_argument("--sleep", "-t", type=int, default=300, metavar='PERIOD', help="How long you want the program to run (secs)")
+    ap.add_argument("--verbose","-v", action="store_true", help="increase output verbosity")
     # Store parsed arguments into array of variables
     args = vars(ap.parse_args())
     # Extract stored arguments array into individual variables for later usage in script
@@ -48,6 +49,7 @@ if __name__ == "__main__":
     pinA = args["pinA"];             pinB = args["pinB"]
     dir = args["gpio"];              pwm = args["pwm"]
     vel = args["speed"];             dt = args["sleep"]
+    verbose = args["verbose"]
 
     pi = pigpio.pi()
     if not pi.connected:
@@ -60,7 +62,7 @@ if __name__ == "__main__":
     upSwitch = PiLimitSwitch(upLim,"Upper Switch",pi=pi, verbose=True)
     lowSwitch = PiLimitSwitch(lowLim,"Lower Switch",pi=pi, verbose=True)
 
-    pl = BLEDevicePoller(flag_hw_reset=True)
+    pl = BLEDevicePoller(flag_hw_reset=True,debug_rssi=verbose)
     pl.add_device("BlueCharm","B0:91:22:F7:6D:55",'bluecharm')
     pl.add_device("tkr","C3:CE:5E:26:AD:0A",'trackr')
     update_thread = threading.Thread(target=pl.start)
