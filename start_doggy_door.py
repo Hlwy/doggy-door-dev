@@ -64,6 +64,7 @@ def close_door(motor, speed,encoder,switches,encoder_limit=2945.0):
 
 if __name__ == "__main__":
     import time, argparse
+    closeCntThresh = 2
 
     # Setup commandline argument(s) structures
     ap = argparse.ArgumentParser(description='Doggy Door Main')
@@ -118,8 +119,8 @@ if __name__ == "__main__":
     print("[INFO] DoggyDoor() --- Beginning Main loop...")
     while 1:
         if pl.are_devices_nearby():
+            closeCnt = 0
             print("[%.2f] Devices in range..." % time.time())
-            # motor.set_speed(vel)
             open_door(motor,vel,enc,[upSwitch],encoder_limit=encLim+encOffset)
             while 1:
                 flags = []
@@ -129,9 +130,15 @@ if __name__ == "__main__":
                 print("[DEBUG] Nearby Device Check = %s" % (str(flags)) )
                 if True in flags:
                     print("Keeping door open (devices nearby).....")
+                    closeCnt = 0
                 else:
-                    print("No devices nearby, closing door...")
-                    break
+                    closeCnt += 1
+                    if closeCnt == closeCntThresh:
+                        print("No devices nearby, closing door...")
+                        break
+                    else:
+                        print("No devices nearby, checking again if door is clear...")
+
             close_door(motor,-1.0*vel,enc,[lowSwitch],encoder_limit=(-1.0*encLim)+encOffset)
         # if upSwitch.is_pressed:
         #     motor.stop()
