@@ -125,7 +125,7 @@ if __name__ == "__main__":
                 flags = []
                 for i in range(10):
                     flags.append(pl.are_devices_nearby())
-                    time.sleep(0.1)
+                    time.sleep(0.2)
                 print("[DEBUG] Nearby Device Check = %s" % (str(flags)) )
                 if True in flags:
                     print("Keeping door open (devices nearby).....")
