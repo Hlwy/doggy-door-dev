@@ -74,7 +74,7 @@ if __name__ == "__main__":
     ap.add_argument("--gpio", "-d", type=int, default=21, metavar='GPIO', help="Gpio responsible for setting motor direction")
     ap.add_argument("--pwm", "-p", type=int, default=20, metavar='GPIO', help="Pin responsible for setting motor PWM signal")
     ap.add_argument("--speed", "-s", type=float, default=0.1, metavar='SPEED', help="Speed you want to drive the motor (-1.0 < spd < 1.0)")
-    ap.add_argument("--limit", "-l", type=float, default=2945.0, metavar='ENC_POS', help="Encoder reading at max door open position.")
+    ap.add_argument("--limit", "-L", type=float, default=2945.0, metavar='ENC_POS', help="Encoder reading at max door open position.")
     ap.add_argument("--sleep", "-t", type=int, default=300, metavar='PERIOD', help="How long you want the program to run (secs)")
     ap.add_argument("--verbose","-v", action="store_true", help="increase output verbosity")
     # Store parsed arguments into array of variables
