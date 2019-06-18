@@ -9,7 +9,7 @@ class PiEncoder(object):
     dt = 0.01
     lastGpio = None
     position = 0
-    def __init__(self,pinEncA,pinEncB, debounce=50, pi=None):
+    def __init__(self,pinEncA,pinEncB, debounce=50, pi=None,verbose=False):
         # Initialize pigpiod if not already done so
         if pi is None:
             pi = pigpio.pi()
@@ -17,6 +17,7 @@ class PiEncoder(object):
                 print("[ERROR] PiEncoder() ---- Could not connect to Raspberry Pi!")
                 exit()
         self.pi = pi
+        self.verbose = verbose
 
         # Initialize everything else
         self.encA = pinEncA
@@ -42,7 +43,10 @@ class PiEncoder(object):
 
     def callback(self,step):
         self.position+=step
-        print("[INFO] PiEncoder --- Position: %d" % self.position)
+        if(self.verbose): print("[INFO] PiEncoder --- Position: %d" % self.position)
+
+    def get_current_position(self):
+        return self.position
 
     def signal_handler(self, signal, frame):
         print('You pressed Ctrl+C!')
@@ -82,7 +86,7 @@ if __name__ == "__main__":
     if not pi.connected:
         print("[ERROR] Could not connect to Raspberry Pi!")
         exit()
-    enc = PiEncoder(pinA, pinB,pi=pi)
+    enc = PiEncoder(pinA, pinB,pi=pi, verbose=True)
     time.sleep(dt)
     enc.close()
     pi.stop()

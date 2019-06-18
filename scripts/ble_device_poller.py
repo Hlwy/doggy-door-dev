@@ -5,7 +5,7 @@ import signal
 
 class BLEDevicePoller(object):
     beacons = {
-        "trackr": -60.0,
+        "trackr": -50.0,
         "bluecharm":  -70.0,
         "tile": -50.0
     }

@@ -24,9 +24,24 @@ def motor_loop(self):
         if self.flag_stop: break
     print("[INFO] motor_loop() --- Exited.")
 
-# def open_door(motor, speed):
-#     motor.set_speed(speed)
+def open_door(motor, speed,encoder,switches,encoder_limit=2945.0):
+    motor.set_speed(speed)
+    while 1:
+        flag_stop_motor = False
+        pos = encoder.get_current_position()
+        print("[INFO] open_door() --- Position: %d" % pos)
+        if(pos >= encoder_limit):
+            flag_stop_motor = True
+            print("[INFO] open_door() --- Encoder Max Position Reached Stopping Motor...")
+            break
+        for sw in switches:
+            if sw.is_pressed:
+                flag_stop_motor = True
 
+        if flag_stop_motor:
+            break
+
+    motor.stop()
 
 if __name__ == "__main__":
     import time, argparse
@@ -74,13 +89,14 @@ if __name__ == "__main__":
     while 1:
         if pl.are_devices_nearby():
             print("[%.2f] Devices in range..." % time.time())
-            motor.set_speed(vel)
-        if upSwitch.is_pressed:
-            motor.stop()
-            break
-        if lowSwitch.is_pressed:
-            motor.stop()
-            break
+            # motor.set_speed(vel)
+            open_door(motor,vel,enc,[upSwitch,lowSwitch])
+        # if upSwitch.is_pressed:
+        #     motor.stop()
+        #     break
+        # if lowSwitch.is_pressed:
+        #     motor.stop()
+        #     break
         time.sleep(0.1)
 
     print("Switch pressed, Stopping...")
