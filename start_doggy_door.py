@@ -123,14 +123,15 @@ if __name__ == "__main__":
             open_door(motor,vel,enc,[upSwitch],encoder_limit=encLim+encOffset)
             while 1:
                 flags = []
-                for i in range(5):
+                for i in range(10):
                     flags.append(pl.are_devices_nearby())
                     time.sleep(0.1)
                 print("[DEBUG] Nearby Device Check = %s" % (str(flags)) )
                 if True in flags:
                     print("Keeping door open (devices nearby).....")
-                print("Keeping door open (devices nearby).....")
-            print("No devices nearby, closing door...")
+                else:
+                    print("No devices nearby, closing door...")
+                    break
             close_door(motor,-1.0*vel,enc,[lowSwitch],encoder_limit=(-1.0*encLim)+encOffset)
         # if upSwitch.is_pressed:
         #     motor.stop()
