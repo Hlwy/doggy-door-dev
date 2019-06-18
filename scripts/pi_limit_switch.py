@@ -7,6 +7,7 @@ class PiLimitSwitch(object):
         self.name = name
         self.verbose = verbose
         self.pin = pin
+        self.flag_flip_gpio_pressed_level = False
         # Initialize pigpiod if not already done so
         if pi is None:
             pi = pigpio.pi()
@@ -39,9 +40,18 @@ class PiLimitSwitch(object):
         if self.verbose: print("[%.2f] Limit Switch '%s' on pin '%d' de-activated." % (time.time(),self.name,gpio) )
         self.is_pressed = False
 
-    def check(self):
+    def check(self,verbose=False):
         level = self.pi.read(self.pin)
-        print("[INFO] PiLimitSwitch::check() ---- GPIO [%d] Level = %d" % (self.pin,level))
+        if verbose: print("[INFO] PiLimitSwitch::check() ---- GPIO [%d] Level = %d" % (self.pin,level))
+
+        if self.flag_flip_gpio_pressed_level: pressed_level = 1
+        else: pressed_level = 0
+        
+        if level == pressed_level:
+            return True
+        else:
+            return False
+
 
 if __name__ == "__main__":
     import time, argparse

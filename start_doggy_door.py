@@ -106,16 +106,29 @@ if __name__ == "__main__":
 
     # self.motor_thread = threading.Thread(target=self.motor_loop)
     # self.motor_thread.start()
-    close_door(motor,-1.0*vel,enc,[lowSwitch],encoder_limit=-1.0*encLim)
-    encOffset = enc.get_current_position()
 
+    if not lowSwitch.check():
+        print("[INFO] DoggyDoor not closed, closing door...")
+        close_door(motor,-1.0*vel,enc,[lowSwitch],encoder_limit=-1.0*encLim)
+        encOffset = enc.get_current_position()
+    else:
+        print("[INFO] DoggyDoor already closed.")
+        encOffset = 0.0
+
+    print("[INFO] DoggyDoor() --- Beginning Main loop...")
     while 1:
         if pl.are_devices_nearby():
             print("[%.2f] Devices in range..." % time.time())
             # motor.set_speed(vel)
             open_door(motor,vel,enc,[upSwitch],encoder_limit=encLim+encOffset)
-            while pl.are_devices_nearby():
-                time.sleep(0.2)
+            while 1:
+                flags = []
+                for i in range(5):
+                    flags.append(pl.are_devices_nearby())
+                    time.sleep(0.1)
+                print("[DEBUG] Nearby Device Check = %s" % (str(flags)) )
+                if True in flags:
+                    print("Keeping door open (devices nearby).....")
                 print("Keeping door open (devices nearby).....")
             print("No devices nearby, closing door...")
             close_door(motor,-1.0*vel,enc,[lowSwitch],encoder_limit=(-1.0*encLim)+encOffset)
